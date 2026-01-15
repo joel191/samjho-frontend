@@ -25,25 +25,41 @@ function App() {
   }
 
   async function explain() {
-    if (!input.trim()) return;
+  if (!input.trim()) return;
 
-    setLoading(true);
+  setLoading(true);
 
-    const res = await fetch("https://samjho-backend.onrender.com/api/explain", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: input, language }),
-    });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s
+
+  try {
+    const res = await fetch(
+      "https://samjho-backend.onrender.com/api/explain",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: input, language }),
+        signal: controller.signal,
+      }
+    );
+
+    clearTimeout(timeoutId);
 
     const data = await res.json();
-
     setExplanation(data.explanation);
     setMode(data.mode || "study");
-    setConfidenceMessage("You took a step forward today. That matters 🌱");
+    setConfidenceMessage("You took a step forward today 🌱");
     saveToJournal(input);
-
+  } catch (error) {
+    setExplanation(
+      "The app is waking up right now 🌱\nPlease try again in a few seconds."
+    );
+    setMode("study");
+  } finally {
     setLoading(false);
   }
+}
+
 
   async function askDoubt(type) {
     setLoading(true);

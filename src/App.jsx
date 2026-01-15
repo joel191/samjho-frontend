@@ -29,7 +29,7 @@ function App() {
 
     setLoading(true);
 
-    const res = await fetch("https://samjho-backend.onrender.com", {
+    const res = await fetch("https://samjho-backend.onrender.com/api/explain", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content: input, language }),
@@ -48,7 +48,7 @@ function App() {
   async function askDoubt(type) {
     setLoading(true);
 
-    const res = await fetch("https://samjho-backend.onrender.com", {
+    const res = await fetch("https://samjho-backend.onrender.com/api/doubt", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
